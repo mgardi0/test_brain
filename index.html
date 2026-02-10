@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>شیکاری مێشک 🧬</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    
+    <style>
+        :root {
+            --primary-color: #00f2ff; /* شینی نیۆن */
+            --bg-color: #050505;
+            --text-color: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: var(--bg-color);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: var(--text-color);
+            user-select: none; /* بۆ ئەوەی تێکست دیاری نەکرێت */
+        }
+
+        /* باگراوندی تۆڕی دیجیتاڵی */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+
+        /* شوێنی پەنجەمۆرەکە */
+        .fingerprint-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            border: 2px solid rgba(0, 242, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+            background: rgba(0, 20, 20, 0.5);
+        }
+
+        .fingerprint-container:active, .fingerprint-container.scanning {
+            transform: scale(0.95);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.4);
+        }
+
+        /* ئایکۆنی پەنجە */
+        .finger-icon {
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.3s;
+        }
+
+        .fingerprint-container.scanning .finger-icon {
+            color: var(--primary-color);
+            animation: pulse 0.5s infinite alternate;
+        }
+
+        /* هێڵی سکانکردن */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+            display: none;
+            border-radius: 50%;
+        }
+
+        .fingerprint-container.scanning .scan-line {
+            display: block;
+            animation: scan 1.5s linear infinite;
+        }
+
+        .status-text {
+            font-size: 1.1rem;
+            color: #888;
+            min-height: 30px;
+            margin-bottom: 20px;
+        }
+
+        /* ئەنجام */
+        .result-box {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            animation: slideUp 0.5s ease;
+        }
+
+        .result-title {
+            color: #ff4757;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .result-desc {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <div class="container">
+        <h1>شیکاری زیرەکی <br><span style="font-size: 0.6em; color: white;">کۆلێژی پەروەردە</span></h1>
+
+        <div class="fingerprint-container" id="scannerBtn">
+            <div class="scan-line"></div>
+            <div class="finger-icon">☝️</div>
+        </div>
+
+        <div class="status-text" id="statusText">پەنجە ڕاگرە بۆ سکانکردن...</div>
+
+        <div class="result-box" id="resultBox">
+            <div class="result-title">⚠️ ئاگادارکردنەوە!</div>
+            <div class="result-desc">
+                پشکنینەکە دەریخست مێشکی تۆ:<br><br>
+                🍔 %٩٠ بیری لای کافتریا و خواردنە<br>
+                😴 %٩ بیری لای نوستنە<br>
+                📚 %١ تەنها سەعی دەکات!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scannerBtn = document.getElementById('scannerBtn');
+        const statusText = document.getElementById('statusText');
+        const resultBox = document.getElementById('resultBox');
+        
+        let scanTimer;
+        let isScanning = false;
+
+        // دەستپێکردنی سکان
+        function startScan(e) {
+            e.preventDefault(); // ڕێگری لە Scroll و کێشەی مۆبایل
+            if (isScanning) return;
+            
+            // شاردنەوەی ئەنجام ئەگەر هەبێت
+            resultBox.style.display = 'none';
+            
+            isScanning = true;
+            scannerBtn.classList.add('scanning');
+            statusText.innerText = "خەریکی شیکارکردنە... پەنجە لامەبە";
+            statusText.style.color = "#00f2ff";
+
+            // دوای 3 چرکە ئەنجامەکە پیشان دەدات
+            scanTimer = setTimeout(() => {
+                finishScan();
+            }, 3000);
+        }
+
+        // وەستانی سکان (ئەگەر پەنجەی لابرد)
+        function stopScan() {
+            if (!isScanning) return;
+            
+            clearTimeout(scanTimer);
+            isScanning = false;
+            scannerBtn.classList.remove('scanning');
+            
+            // ئەگەر تەواو نەبووبوو
+            if (resultBox.style.display === 'none') {
+                statusText.innerText = "سکانی تەواو نەبوو! تکایە پەنجە ڕاگرە.";
+                statusText.style.color = "#ff4757";
+            }
+        }
+
+        // تەواوبوونی سکان
+        function finishScan() {
+            isScanning = false;
+            scannerBtn.classList.remove('scanning');
+            statusText.innerText = "شیکارکردن تەواو بوو ✅";
+            statusText.style.color = "#2ecc71";
+            
+            // پیشاندانی ئەنجام
+            resultBox.style.display = 'block';
+            
+            // لەرزینی مۆبایل (Vibration)
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+        }
+
+        // بۆ مۆبایل (Touch Events)
+        scannerBtn.addEventListener('touchstart', startScan);
+        scannerBtn.addEventListener('touchend', stopScan);
+
+        // بۆ کۆمپیوتەر (Mouse Events)
+        scannerBtn.addEventListener('mousedown', startScan);
+        scannerBtn.addEventListener('mouseup', stopScan);
+        scannerBtn.addEventListener('mouseleave', stopScan);
+
+    </script>
+</body>
+</html>
